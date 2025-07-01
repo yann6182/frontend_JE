@@ -2,16 +2,22 @@ import { useQuery } from '@tanstack/react-query';
 import { api } from '../services/api';
 
 export function useDpgfs() {
-  return useQuery(['dpgfs'], async () => {
-    const { data } = await api.get('/dpgf/');
-    return data;
+  return useQuery({
+    queryKey: ['dpgfs'],
+    queryFn: async () => {
+      const { data } = await api.get('/dpgf/');
+      return data;
+    }
   });
 }
 
 export function useDpgf(id: string) {
-  return useQuery(['dpgf', id], async () => {
-    const { data } = await api.get(`/dpgf/${id}`);
-    return data;
+  return useQuery({
+    queryKey: ['dpgf', id],
+    queryFn: async () => {
+      const { data } = await api.get(`/dpgf/${id}`);
+      return data;
+    }
   });
 }
 
@@ -49,10 +55,12 @@ export interface DpgfStructure {
 
 // Hook pour récupérer la structure complète d'un DPGF
 export function useDpgfStructure(id: string) {
-  return useQuery(['dpgfStructure', id], async () => {
-    const { data } = await api.get<DpgfStructure>(`/dpgf/${id}/structure`);
-    return data;
-  }, {
+  return useQuery({
+    queryKey: ['dpgfStructure', id],
+    queryFn: async () => {
+      const { data } = await api.get<DpgfStructure>(`/dpgf/${id}/structure`);
+      return data;
+    },
     enabled: !!id // Ne lance la requête que si l'ID est défini
   });
 }

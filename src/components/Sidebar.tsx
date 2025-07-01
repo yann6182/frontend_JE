@@ -1,7 +1,9 @@
 import { Link, useLocation } from 'react-router-dom';
 
 const links = [
-  { to: '/', label: 'Dashboard' }
+  { to: '/', label: ' Dashboard' },
+  /*{ to: '/search', label: ' Recherche Éléments' },
+  { to: '/search-test', label: ' Test Recherche' }*/
 ];
 
 export function Sidebar() {

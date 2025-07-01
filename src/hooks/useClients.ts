@@ -7,23 +7,24 @@ export interface Client {
 }
 
 export function useClients() {
-  return useQuery(['clients'], async () => {
-    const { data } = await api.get<Client[]>('/clients/');
-    return data;
+  return useQuery({
+    queryKey: ['clients'],
+    queryFn: async () => {
+      const { data } = await api.get<Client[]>('/clients/');
+      return data;
+    }
   });
 }
 
 export function useCreateClient() {
   const queryClient = useQueryClient();
-  return useMutation(
-    async (client: Omit<Client, 'id_client'>) => {
+  return useMutation({
+    mutationFn: async (client: Omit<Client, 'id_client'>) => {
       const { data } = await api.post<Client>('/clients/', client);
       return data;
     },
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries(['clients']);
-      }
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['clients'] });
     }
-  );
+  });
 }

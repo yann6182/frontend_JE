@@ -10,9 +10,7 @@ export function AddClientDialog() {
 
   return (
     <Dialog.Root open={open} onOpenChange={setOpen}>
-      <Dialog.Trigger asChild>
-        <Button>Ajouter un client</Button>
-      </Dialog.Trigger>
+      
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 bg-black/30" />
         <Dialog.Content className="fixed left-1/2 top-1/2 w-80 -translate-x-1/2 -translate-y-1/2 bg-white p-4 rounded shadow">

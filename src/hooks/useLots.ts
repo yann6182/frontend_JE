@@ -26,23 +26,32 @@ export interface Element {
 }
 
 export function useLots(dpgfId: string) {
-  return useQuery(['lots', dpgfId], async () => {
-    const { data } = await api.get<Lot[]>(`/lots/?id_dpgf=${dpgfId}`);
-    return data;
+  return useQuery({
+    queryKey: ['lots', dpgfId],
+    queryFn: async () => {
+      const { data } = await api.get<Lot[]>(`/lots/?id_dpgf=${dpgfId}`);
+      return data;
+    }
   });
 }
 
 export function useSections(lotId: string) {
-  return useQuery(['sections', lotId], async () => {
-    const { data } = await api.get<Section[]>(`/sections/?id_lot=${lotId}`);
-    return data;
+  return useQuery({
+    queryKey: ['sections', lotId],
+    queryFn: async () => {
+      const { data } = await api.get<Section[]>(`/sections/?id_lot=${lotId}`);
+      return data;
+    }
   });
 }
 
 export function useElements(sectionId: string) {
-  return useQuery(['elements', sectionId], async () => {
-    const { data } = await api.get<Element[]>(`/element_ouvrages/?id_section=${sectionId}`);
-    return data;
+  return useQuery({
+    queryKey: ['elements', sectionId],
+    queryFn: async () => {
+      const { data } = await api.get<Element[]>(`/element_ouvrages/?id_section=${sectionId}`);
+      return data;
+    }
   });
 }
 
@@ -62,24 +71,27 @@ export interface ElementWithSection extends Element {
 }
 
 export function useElementsWithSections(dpgfId?: string, sectionId?: string) {
-  return useQuery(['elementsWithSections', dpgfId, sectionId], async () => {
-    let url = `/element_ouvrages/with_sections`;
-    const params = new URLSearchParams();
-    
-    if (dpgfId) {
-      params.append('dpgf_id', dpgfId);
+  return useQuery({
+    queryKey: ['elementsWithSections', dpgfId, sectionId],
+    queryFn: async () => {
+      let url = `/element_ouvrages/with_sections`;
+      const params = new URLSearchParams();
+      
+      if (dpgfId) {
+        params.append('dpgf_id', dpgfId);
+      }
+      
+      if (sectionId) {
+        params.append('section_id', sectionId);
+      }
+      
+      const queryString = params.toString();
+      if (queryString) {
+        url += `?${queryString}`;
+      }
+      
+      const { data } = await api.get<ElementWithSection[]>(url);
+      return data;
     }
-    
-    if (sectionId) {
-      params.append('section_id', sectionId);
-    }
-    
-    const queryString = params.toString();
-    if (queryString) {
-      url += `?${queryString}`;
-    }
-    
-    const { data } = await api.get<ElementWithSection[]>(url);
-    return data;
   });
 }

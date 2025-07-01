@@ -12,8 +12,8 @@ export function AddDpgfDialog() {
   const [clientId, setClientId] = useState('');
   const { data: clients = [] } = useClients();
   const qc = useQueryClient();
-  const createDpgf = useMutation(
-    async () => {
+  const createDpgf = useMutation({
+    mutationFn: async () => {
       const { data } = await api.post('/dpgf/', {
         nom_projet: nom,
         date_dpgf: date,
@@ -21,22 +21,19 @@ export function AddDpgfDialog() {
       });
       return data;
     },
-    {
-      onSuccess: () => {
-        qc.invalidateQueries(['dpgfs']);
-        setOpen(false);
-        setNom('');
-        setDate('');
-        setClientId('');
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['dpgfs'] });
+      setOpen(false);
+      setNom('');
+      setDate('');
+      setClientId('');
       }
     }
   );
 
   return (
     <Dialog.Root open={open} onOpenChange={setOpen}>
-      <Dialog.Trigger asChild>
-        <Button>Ajouter un DPGF</Button>
-      </Dialog.Trigger>
+    
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 bg-black/30" />
         <Dialog.Content className="fixed left-1/2 top-1/2 w-96 -translate-x-1/2 -translate-y-1/2 bg-white p-4 rounded shadow">

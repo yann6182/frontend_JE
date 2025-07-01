@@ -41,10 +41,7 @@ export default function Dashboard() {
           />
         )}
       </div>
-      <div className="bg-white p-4 rounded shadow">
-        <h2 className="text-lg font-semibold mb-2">Créer nouveau DPGF depuis un fichier</h2>
-        <UploadDropzone onUploaded={() => {}} />
-      </div>
+      
     </div>
   );
 }
