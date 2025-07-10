@@ -2,6 +2,13 @@ import { useParams } from 'react-router-dom';
 import { useDpgf, useDpgfStructure, DpgfStructure } from '../hooks/useDpgf';
 import { useMemo, useState } from 'react';
 
+// Fonction pour formater les prix de façon robuste
+const formatPrice = (price: any): string => {
+  if (price === null || price === undefined) return '0.00';
+  const numPrice = typeof price === 'string' ? parseFloat(price) : price;
+  return isNaN(numPrice) ? '0.00' : numPrice.toFixed(2);
+};
+
 export default function DpgfView() {
   const { id = '' } = useParams();
   const { data: dpgfStructure, isLoading, error } = useDpgfStructure(id);
@@ -39,7 +46,7 @@ export default function DpgfView() {
         <div className="mt-2 text-gray-600">          <p>Client: <span className="font-medium">{dpgfStructure.client?.nom_client}</span></p>
           <p>Date: <span className="font-medium">{new Date(dpgfStructure.date_dpgf).toLocaleDateString()}</span></p>
           <p>Statut: <span className="font-medium">{dpgfStructure.statut_offre || "Non défini"}</span></p>
-          <p>Total: <span className="font-medium">{typeof totalGeneral === 'number' ? totalGeneral.toFixed(2) : '0.00'} €</span></p>
+          <p>Total: <span className="font-medium">{formatPrice(totalGeneral)} €</span></p>
         </div>
         
         <div className="mt-4 flex gap-2">
@@ -123,7 +130,7 @@ function LotView({ lot }: { lot: DpgfStructure['lots'][0] }) {
       
       <div className="p-3 border-t bg-gray-50 flex justify-between items-center">
         <span className="font-medium">Total du lot</span>
-        <span className="text-lg font-semibold">{typeof totalLot === 'number' ? totalLot.toFixed(2) : '0.00'} €</span>
+        <span className="text-lg font-semibold">{formatPrice(totalLot)} €</span>
       </div>
     </div>
   );
@@ -177,13 +184,13 @@ function SectionView({ section }: { section: DpgfStructure['lots'][0]['sections'
                   <td className="px-3 py-2">{element.designation_exacte}</td>
                   <td className="px-3 py-2 text-right">{element.unite}</td>
                   <td className="px-3 py-2 text-right">{element.quantite}</td>
-                  <td className="px-3 py-2 text-right">{typeof element.prix_unitaire_ht === 'number' ? element.prix_unitaire_ht.toFixed(2) : '0.00'} €</td>
-                  <td className="px-3 py-2 text-right font-medium">{typeof element.prix_total_ht === 'number' ? element.prix_total_ht.toFixed(2) : '0.00'} €</td>
+                  <td className="px-3 py-2 text-right">{formatPrice(element.prix_unitaire_ht)} €</td>
+                  <td className="px-3 py-2 text-right font-medium">{formatPrice(element.prix_total_ht)} €</td>
                 </tr>
               ))}
               <tr className="bg-gray-50">
                 <td colSpan={4} className="px-3 py-2 text-right font-medium">Total section</td>
-                <td className="px-3 py-2 text-right font-semibold">{typeof sectionTotal === 'number' ? sectionTotal.toFixed(2) : '0.00'} €</td>
+                <td className="px-3 py-2 text-right font-semibold">{formatPrice(sectionTotal)} €</td>
               </tr>
             </tbody>
           </table>
@@ -296,14 +303,14 @@ function ExcelView({ dpgfStructure }: { dpgfStructure: DpgfStructure }) {
                   <td className="px-3 py-2">{item.element.designation_exacte}</td>
                   <td className="px-3 py-2 text-right">{item.element.unite}</td>
                   <td className="px-3 py-2 text-right">{item.element.quantite}</td>
-                  <td className="px-3 py-2 text-right">{typeof item.element.prix_unitaire_ht === 'number' ? item.element.prix_unitaire_ht.toFixed(2) : '0.00'} €</td>
-                  <td className="px-3 py-2 text-right font-medium">{typeof item.element.prix_total_ht === 'number' ? item.element.prix_total_ht.toFixed(2) : '0.00'} €</td>
+                  <td className="px-3 py-2 text-right">{formatPrice(item.element.prix_unitaire_ht)} €</td>
+                  <td className="px-3 py-2 text-right font-medium">{formatPrice(item.element.prix_total_ht)} €</td>
                 </tr>
               );
             })}
             <tr className="bg-gray-100 font-semibold">
               <td colSpan={8} className="px-3 py-3 text-right">TOTAL GÉNÉRAL</td>
-              <td className="px-3 py-3 text-right text-lg">{typeof grandTotal === 'number' ? grandTotal.toFixed(2) : '0.00'} €</td>
+              <td className="px-3 py-3 text-right text-lg">{formatPrice(grandTotal)} €</td>
             </tr>
           </tbody>
         </table>
